@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Валентинка</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        .buttons {
+            position: relative;
+            margin-top: 20px;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            margin: 10px;
+            transition: transform 0.3s ease, opacity 1s ease;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        .btn-yes {
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 8px 16px rgba(0, 128, 0, 0.5);
+        }
+
+        .btn-no {
+            background-color: #f44336;
+            color: white;
+            position: absolute;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(255, 0, 0, 0.5);
+        }
+
+        .btn-no:hover {
+            background-color: #ff3333;
+        }
+
+        .btn-no.avoid {
+            transform: translate(0, 0);
+        }
+
+        .btn-yes:hover, .btn-no:hover {
+            transform: scale(1.1);
+        }
+
+        .transitioning {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div>
+        <h1 id="question">Ты меня любишь?</h1>
+        <div class="buttons">
+            <button class="btn btn-yes" id="btn-yes">Да, люблю!</button>
+            <button class="btn btn-no" id="btn-no">Нет, не люблю</button>
+        </div>
+    </div>
+
+    <script>
+        const btnYes = document.getElementById('btn-yes');
+        const btnNo = document.getElementById('btn-no');
+        const question = document.getElementById('question');
+        const buttons = document.querySelector('.buttons');
+
+        // Функция для перемещения кнопки "Нет" с ограничением внутри окна
+        const moveButton = () => {
+            const rect = btnNo.getBoundingClientRect();
+            
+            // Если кнопка еще не зафиксирована, фиксируем её в текущем положении
+            if (btnNo.style.position !== 'fixed') {
+                btnNo.style.left = '0';
+                btnNo.style.top = '0';
+                btnNo.style.margin = '0';
+                btnNo.style.position = 'fixed';
+                btnNo.style.transform = `translate(${rect.left}px, ${rect.top}px)`;
+                
+                // Принудительная перерисовка
+                btnNo.offsetWidth;
+            }
+
+            // Получаем максимальные координаты для перемещения кнопки в пределах экрана
+            const maxX = window.innerWidth - btnNo.offsetWidth;
+            const maxY = window.innerHeight - btnNo.offsetHeight;
+
+            // Генерируем случайные координаты для кнопки внутри экрана
+            const randomX = Math.random() * maxX; 
+            const randomY = Math.random() * maxY; 
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        };
+
+        // Эффект для кнопки "Нет" (перемещение)
+        btnNo.addEventListener('mouseover', () => {
+            moveButton();
+        });
+
+        // При нажатии на кнопку "Да"
+        btnYes.addEventListener('click', () => {
+            question.classList.add('transitioning');
+            buttons.classList.add('transitioning');
+            setTimeout(() => {
+                question.textContent = "Я тоже тебя люблю! 💖";
+                question.classList.remove('transitioning');
+                question.style.animation = 'fadeIn 1s forwards';
+            }, 500); // задержка, чтобы эффект сработал до изменения текста
+        });
+
+        // При нажатии на кнопку "Нет"
+        btnNo.addEventListener('click', () => {
+            question.classList.add('transitioning');
+            buttons.classList.add('transitioning');
+            setTimeout(() => {
+                question.textContent = "Ты меня обидел 😢";
+                question.classList.remove('transitioning');
+                question.style.animation = 'fadeIn 1s forwards';
+            }, 500); // задержка для плавного перехода
+        });
+    </script>
+
+</body>
+</html>
